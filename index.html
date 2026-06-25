@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Futuristic Tic-Tac-Toe game with AI opponent. Challenge the machine in this neon-styled strategy game.">
+    <title>Tic-Tac-Toe — Neon Arena</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Animated Background Particles -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Background Image Overlay -->
+    <div class="bg-overlay"></div>
+
+    <!-- ============ SCREEN 1: LANDING ============ -->
+    <section id="landingScreen" class="screen active">
+        <div class="landing-content premium-glass">
+            <div class="logo-container">
+                <div class="logo-glow"></div>
+                <h1 class="game-title">
+                    <span class="title-line" data-text="TIC-TAC-TOE">TIC-TAC-TOE</span>
+                    <span class="title-sub" data-text="NEON ARENA">NEON ARENA</span>
+                </h1>
+            </div>
+            <p class="tagline">Challenge the Machine. Conquer the Grid.</p>
+            <div class="landing-buttons">
+                <button id="btnPlay" class="btn btn-play" onclick="showRoundSelect()">
+                    <span class="btn-icon">▶</span>
+                    <span class="btn-text">PLAY</span>
+                    <div class="btn-glow"></div>
+                </button>
+                <button id="btnQuit" class="btn btn-quit" onclick="quitGame()">
+                    <span class="btn-icon">✕</span>
+                    <span class="btn-text">QUIT</span>
+                    <div class="btn-glow"></div>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SCREEN 2: ROUND SELECT ============ -->
+    <section id="roundScreen" class="screen">
+        <div class="round-content premium-glass">
+            <h2 class="section-title">SELECT ROUNDS</h2>
+            <p class="section-desc">How many rounds shall we battle?</p>
+            <div class="round-selector">
+                <button class="round-btn" data-rounds="1" onclick="selectRound(1)">1</button>
+                <button class="round-btn" data-rounds="3" onclick="selectRound(3)">3</button>
+                <button class="round-btn selected" data-rounds="5" onclick="selectRound(5)">5</button>
+                <button class="round-btn" data-rounds="7" onclick="selectRound(7)">7</button>
+                <button class="round-btn" data-rounds="10" onclick="selectRound(10)">10</button>
+            </div>
+            <div class="custom-round">
+                <label for="customRoundInput">Or enter custom:</label>
+                <input type="number" id="customRoundInput" min="1" max="99" placeholder="1-99">
+            </div>
+            <div class="round-actions">
+                <button class="btn btn-start" id="btnStart" onclick="startGame()">
+                    <span class="btn-icon">⚡</span>
+                    <span class="btn-text">START BATTLE</span>
+                    <div class="btn-glow"></div>
+                </button>
+                <button class="btn btn-back" onclick="goBack()">
+                    <span class="btn-icon">◀</span>
+                    <span class="btn-text">BACK</span>
+                    <div class="btn-glow"></div>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SCREEN 3: GAME ============ -->
+    <section id="gameScreen" class="screen">
+        <div class="game-container">
+            <!-- Score Board -->
+            <div class="scoreboard premium-glass">
+                <div class="score-player score-you">
+                    <div class="score-avatar">🧑‍💻</div>
+                    <div class="score-info">
+                        <span class="score-label">YOU (X)</span>
+                        <span class="score-value" id="scorePlayer">0</span>
+                    </div>
+                    <div class="score-indicator" id="indicatorPlayer"></div>
+                </div>
+
+                <div class="score-center">
+                    <div class="round-display">
+                        ROUND <span id="currentRound">1</span> / <span id="totalRounds">5</span>
+                    </div>
+                    <div class="draw-display">
+                        DRAWS: <span id="scoreDraws">0</span>
+                    </div>
+                </div>
+
+                <div class="score-player score-ai">
+                    <div class="score-indicator" id="indicatorAI"></div>
+                    <div class="score-info">
+                        <span class="score-label">AI (O)</span>
+                        <span class="score-value" id="scoreAI">0</span>
+                    </div>
+                    <div class="score-avatar">🤖</div>
+                </div>
+            </div>
+
+            <!-- Game Status -->
+            <div class="game-status" id="gameStatus">Your Turn</div>
+
+            <!-- Game Board -->
+            <div class="board-wrapper">
+                <div class="board-glow"></div>
+                <div class="game-board" id="gameBoard">
+                    <div class="cell" data-index="0" onclick="handleCellClick(0)"></div>
+                    <div class="cell" data-index="1" onclick="handleCellClick(1)"></div>
+                    <div class="cell" data-index="2" onclick="handleCellClick(2)"></div>
+                    <div class="cell" data-index="3" onclick="handleCellClick(3)"></div>
+                    <div class="cell" data-index="4" onclick="handleCellClick(4)"></div>
+                    <div class="cell" data-index="5" onclick="handleCellClick(5)"></div>
+                    <div class="cell" data-index="6" onclick="handleCellClick(6)"></div>
+                    <div class="cell" data-index="7" onclick="handleCellClick(7)"></div>
+                    <div class="cell" data-index="8" onclick="handleCellClick(8)"></div>
+                </div>
+                <!-- Win line overlay -->
+                <svg class="win-line-svg" id="winLineSvg" viewBox="0 0 300 300">
+                    <line id="winLine" x1="0" y1="0" x2="0" y2="0" />
+                </svg>
+            </div>
+
+            <!-- Game Actions -->
+            <div class="game-actions">
+                <button class="btn btn-menu" onclick="backToMenu()">
+                    <span class="btn-icon">🏠</span>
+                    <span class="btn-text">MENU</span>
+                    <div class="btn-glow"></div>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SCREEN 4: RESULTS ============ -->
+    <section id="resultScreen" class="screen">
+        <div class="result-content premium-glass">
+            <div class="result-icon" id="resultIcon">🏆</div>
+            <h2 class="result-title" id="resultTitle">VICTORY!</h2>
+            <p class="result-subtitle" id="resultSubtitle">You dominated the arena!</p>
+
+            <div class="final-scores">
+                <div class="final-score-card">
+                    <span class="fsc-label">YOU</span>
+                    <span class="fsc-value" id="finalPlayer">0</span>
+                </div>
+                <div class="final-score-card final-vs">VS</div>
+                <div class="final-score-card">
+                    <span class="fsc-label">AI</span>
+                    <span class="fsc-value" id="finalAI">0</span>
+                </div>
+            </div>
+            <div class="final-draws">Draws: <span id="finalDraws">0</span></div>
+
+            <div class="result-actions">
+                <button class="btn btn-play" onclick="playAgain()">
+                    <span class="btn-icon">🔄</span>
+                    <span class="btn-text">PLAY AGAIN</span>
+                    <div class="btn-glow"></div>
+                </button>
+                <button class="btn btn-quit" onclick="backToMenu()">
+                    <span class="btn-icon">🏠</span>
+                    <span class="btn-text">MENU</span>
+                    <div class="btn-glow"></div>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sound effects (optional - visual only) -->
+    <script src="script.js"></script>
+</body>
+</html>
